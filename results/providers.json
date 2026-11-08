@@ -101,8 +101,8 @@
    "source": "rpd and tokens/min measured from x-ratelimit headers 2026-11-08; tpd from docs table, not observable"
   },
   "gemini": {
-   "rpd": 281,
-   "source": "LOWER BOUND: 281 requests succeeded in one Pacific day with no 429. True free limit is not observable via API; first 429 will reveal it.",
+   "rpd": 498,
+   "source": "MEASURED 2026-11-08: daily 429 after 498 successful requests for gemini-3.5-flash-lite",
    "reset": "midnight Pacific"
   }
  }
