@@ -1,0 +1,2 @@
+
+FAILURE CRITERIA. Do not mark a run as failed just because it is long, contains an intermediate error or retry, or lacks explicit confirmation. Mark fail only if you can cite step ids showing at least one of: (a) the final action or answer contradicts or ignores the goal; (b) the same failing action repeats three or more times without progress (a loop); (c) the agent stops or gives up before the goal is reached; (d) the answer states facts never observed in the trace. If none of these holds, mark pass (fail=false).
