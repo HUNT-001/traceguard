@@ -23,3 +23,11 @@ Targets: trace precision >= output + 5 pts: **missed (+1.2 pts)**. ECE <= 0.15: 
 - Change (one): added `traceguard/rubric.txt` (calibration rubric) appended to the trace reviewer prompt.
 - Before -> after (trace reviewer, tuning set): ECE 0.302 -> 0.198 (better, still above 0.15); failure precision 0.684 (13/19) -> 0.667 (14/21), **-1.8 pts**; recall 13/15 -> 14/15; precision gap vs output-only +6.5 -> +4.8 pts.
 - Decision: **REVERT**. Target metric improved but precision (and the gap) fell by more than 1 pt. Noted: this is a 1-trajectory difference on n=25; the revert follows the rule as written, not a belief that the rubric hurts.
+
+## Iteration 2 (reviewer rubric, target: ECE)
+- Metric furthest from target: ECE 0.302 vs <= 0.15 (unchanged ranking after iteration 1 was reverted).
+- Hypothesis: the baseline reviewer flags 6 of 10 successful trajectories as failed; ECE comes from confident wrong verdicts. Strict, citable failure criteria should cut false flags and align confidence with accuracy.
+- Change (one): `traceguard/rubric.txt` now holds strict failure criteria (fail only for contradiction, loop, give-up, or unobserved claims; otherwise pass). Commit d055150.
+- Process note: the first attempt at this evaluation ran against a stale script (a `git revert` of iteration 1 also removed uncommitted tooling that had been swept into that commit) and overwrote `results/reviewer_validation.json`. I restored that file from git, verified it again shows the original 60-trajectory numbers, discarded the invalid run, and re-ran. Tooling is now committed separately from iteration changes.
+- Before -> after (trace reviewer, tuning set n=25, `results/reviewer_tune_iter2.json`): ECE 0.302 -> 0.260; failure precision 13/19 = 0.684 -> 12/16 = 0.750; precision gap vs output-only +6.5 -> +13.1 pts; recall 13/15 = 0.867 -> 12/15 = 0.800 (-6.7 pts); accuracy 0.68 -> 0.72.
+- Decision: **KEEP**. The target metric and the precision-gap target both improved. Recall fell 6.7 pts; recall is not in the target table so it does not trigger the revert rule, but it is a real trade-off (3 missed failures vs 2) and is carried to the final report. ECE is still above 0.15.

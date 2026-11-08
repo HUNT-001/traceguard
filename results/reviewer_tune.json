@@ -1,5 +1,5 @@
 {
- "rubric": "\nCALIBRATION RUBRIC. You only see text: actions, URLs, errors and the agent's own reasoning, never screenshots or the final page state. Agents often state success they have not verified, and often succeed even after errors. Therefore:\n- Report confidence as the honest probability that your fail/pass verdict is correct. Most verdicts should fall between 0.55 and 0.80.\n- Use 0.85 or higher only when the trace contains explicit, quoted evidence that settles the verdict (for example a repeated identical failing action, or a final answer that contradicts the goal).\n- If the trace ends without clear confirmation either way, say so with confidence at or below 0.60.\n",
+ "rubric": "\nFAILURE CRITERIA. Do not mark a run as failed just because it is long, contains an intermediate error or retry, or lacks explicit confirmation. Mark fail only if you can cite step ids showing at least one of: (a) the final action or answer contradicts or ignores the goal; (b) the same failing action repeats three or more times without progress (a loop); (c) the agent stops or gives up before the goal is reached; (d) the answer states facts never observed in the trace. If none of these holds, mark pass (fail=false).\n",
  "model": "gemini-3.5-flash-lite",
  "seed": 7,
  "sampled": 25,
@@ -223,16 +223,16 @@
   },
   "trace": {
    "n": 25,
-   "tp": 14,
-   "fp": 7,
-   "fn": 1,
-   "tn": 3,
-   "fail_precision": 0.6666666666666666,
-   "fail_recall": 0.9333333333333333,
-   "success_precision": 0.75,
-   "success_recall": 0.3,
-   "accuracy": 0.68,
-   "ece": 0.19799999999999993,
+   "tp": 12,
+   "fp": 4,
+   "fn": 3,
+   "tn": 6,
+   "fail_precision": 0.75,
+   "fail_recall": 0.8,
+   "success_precision": 0.6666666666666666,
+   "success_recall": 0.6,
+   "accuracy": 0.72,
+   "ece": 0.26,
    "unparsed": 0,
    "findings_dropped_no_evidence": 0,
    "records": [
@@ -241,7 +241,7 @@
      "bench": "workarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -249,7 +249,7 @@
      "bench": "workarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -257,15 +257,15 @@
      "bench": "visualwebarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.95,
      "parsed": true
     },
     {
      "task": "workarena.servicenow.create-user",
      "bench": "workarena",
      "label_fail": false,
-     "pred_fail": true,
-     "conf": 0.85,
+     "pred_fail": false,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -273,7 +273,7 @@
      "bench": "workarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -281,15 +281,15 @@
      "bench": "visualwebarena",
      "label_fail": false,
      "pred_fail": false,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
      "task": "webarena.344",
      "bench": "webarena",
      "label_fail": false,
-     "pred_fail": true,
-     "conf": 0.85,
+     "pred_fail": false,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -297,15 +297,15 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
      "task": "workarena.servicenow.filter-trivial-expenses-find-total-return-and-select-investments-medium-l2",
      "bench": "workarena",
      "label_fail": false,
-     "pred_fail": true,
-     "conf": 0.85,
+     "pred_fail": false,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -313,7 +313,7 @@
      "bench": "workarena",
      "label_fail": false,
      "pred_fail": false,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -321,7 +321,7 @@
      "bench": "webarena",
      "label_fail": false,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -329,7 +329,7 @@
      "bench": "visualwebarena",
      "label_fail": false,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.95,
      "parsed": true
     },
     {
@@ -337,7 +337,7 @@
      "bench": "workarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -345,7 +345,7 @@
      "bench": "visualwebarena",
      "label_fail": false,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -353,7 +353,7 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.9,
      "parsed": true
     },
     {
@@ -361,7 +361,7 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.95,
      "parsed": true
     },
     {
@@ -369,7 +369,7 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": false,
-     "conf": 0.75,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -377,7 +377,7 @@
      "bench": "visualwebarena",
      "label_fail": false,
      "pred_fail": false,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -385,7 +385,7 @@
      "bench": "webarena",
      "label_fail": false,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -393,7 +393,7 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.85,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -401,15 +401,15 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
      "task": "visualwebarena.133",
      "bench": "visualwebarena",
      "label_fail": true,
-     "pred_fail": true,
-     "conf": 0.85,
+     "pred_fail": false,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -417,15 +417,15 @@
      "bench": "workarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.95,
+     "conf": 0.99,
      "parsed": true
     },
     {
      "task": "visualwebarena.419",
      "bench": "visualwebarena",
      "label_fail": true,
-     "pred_fail": true,
-     "conf": 0.9,
+     "pred_fail": false,
+     "conf": 0.99,
      "parsed": true
     },
     {
@@ -433,13 +433,13 @@
      "bench": "webarena",
      "label_fail": true,
      "pred_fail": true,
-     "conf": 0.9,
+     "conf": 0.95,
      "parsed": true
     }
    ]
   }
  },
  "stopped": null,
- "requests_used_today": 195,
+ "requests_used_today": 220,
  "cache_hits": 25
 }
