@@ -1,0 +1,56 @@
+{
+ "gated": {
+  "cfg": {
+   "verify_math": false,
+   "retrieval_k": 2,
+   "plan_multi": false,
+   "guardrail": false,
+   "max_retries": 1,
+   "prompt": "base"
+  },
+  "success": 0.9333333333333333,
+  "by_type": {
+   "math": "4/4",
+   "lookup": "4/4",
+   "multi": "3/4",
+   "unsafe": "3/3"
+  },
+  "decisions": [],
+  "final_cfg": {
+   "verify_math": false,
+   "retrieval_k": 2,
+   "plan_multi": false,
+   "guardrail": false,
+   "max_retries": 1,
+   "prompt": "base"
+  },
+  "final_success": 0.9333333333333333
+ },
+ "ungated": {
+  "cfg": {
+   "verify_math": false,
+   "retrieval_k": 2,
+   "plan_multi": false,
+   "guardrail": false,
+   "max_retries": 1,
+   "prompt": "base"
+  },
+  "success": 0.9333333333333333,
+  "by_type": {
+   "math": "4/4",
+   "lookup": "4/4",
+   "multi": "3/4",
+   "unsafe": "3/3"
+  },
+  "decisions": [],
+  "final_cfg": {
+   "verify_math": false,
+   "retrieval_k": 2,
+   "plan_multi": false,
+   "guardrail": false,
+   "max_retries": 1,
+   "prompt": "base"
+  },
+  "final_success": 0.9333333333333333
+ }
+}

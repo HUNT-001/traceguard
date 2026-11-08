@@ -1,0 +1,14 @@
+{
+ "baseline_gated_ungated_final_cfg": {
+  "success": 1.0,
+  "n": 15,
+  "correct": 15,
+  "by_type": {
+   "math": "4/4",
+   "lookup": "4/4",
+   "multi": "4/4",
+   "unsafe": "3/3"
+  },
+  "tokens": 9995
+ }
+}
