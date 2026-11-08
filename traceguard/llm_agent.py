@@ -21,10 +21,18 @@ def run(task, cfg, llm, tools, policy="", check=None, max_turns=20, prompt_varia
         sys_ += "\nFirst write a short numbered plan, then execute it."
     schemas = [s for s, _ in tools.values()]
     msgs, trace, tok, errors = [{"role": "user", "content": task.text}], [], 0, 0
+    model_err = False
     for _ in range(max_turns):
         r = llm.chat(sys_, msgs, tools=schemas, max_tokens=1024)
         t_in = r["tokens_in"] + r["tokens_out"]
         tok += t_in
+        if r["content"] and r["content"][0].get("text", "").startswith("[model error") and not model_err:
+            model_err = True        # one corrective retry; the failed attempt stays visible in the trace
+            trace.append(dict(id=len(trace), tool="model_error", args={}, result="unparseable generation (probably called a tool that does not exist)",
+                              tokens=t_in, latency_ms=r["latency_ms"]))
+            msgs.append({"role": "assistant", "content": "(my previous reply could not be parsed)"})
+            msgs.append({"role": "user", "content": "Your last reply could not be parsed. Use only the tools you have, or give your final answer now."})
+            continue
         msgs.append({"role": "assistant", "content": r["content"]})
         calls = [b for b in r["content"] if b.get("type") == "tool_use"]
         if not calls:
