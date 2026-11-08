@@ -91,5 +91,19 @@
    "free_tier_rpm_rpd": "not observable via API; dashboard login not available to me. Using a conservative self-imposed budget of 250 requests/day and treating 429 as the real signal."
   },
   "reviewer_model_chosen": "gemini-3.5-flash-lite"
+ },
+ "quota": {
+  "safety_fraction": 0.8,
+  "groq": {
+   "rpd": 1000,
+   "rpm_tokens": 8000,
+   "tpd": 200000,
+   "source": "rpd and tokens/min measured from x-ratelimit headers 2026-11-08; tpd from docs table, not observable"
+  },
+  "gemini": {
+   "rpd": 281,
+   "source": "LOWER BOUND: 281 requests succeeded in one Pacific day with no 429. True free limit is not observable via API; first 429 will reveal it.",
+   "reset": "midnight Pacific"
+  }
  }
 }

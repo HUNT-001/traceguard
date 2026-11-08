@@ -42,26 +42,48 @@ def _to_openai(system, messages, tools):
     return out, body_tools
 
 
+SAFETY_FRACTION = 0.8      # stop at 80% of the (measured) daily quota
+
+
+def _quota(provider, path="results/providers.json"):
+    try:
+        return json.load(open(path)).get("quota", {}).get(provider, {})
+    except OSError:
+        return {}
+
+
 class LLM:
-    def __init__(self, provider, model, daily_budget=500, cache_dir="results/llm_cache",
-                 ledger="results/requests.json", transport=None, seed=0, today=None):
+    """daily_budget (requests) and budget_tokens default to 80% of results/providers.json quota.
+    Day boundary: Groq = UTC date, Gemini = Pacific date (fixed UTC-8; Nov, no DST)."""
+
+    def __init__(self, provider, model, daily_budget=None, cache_dir="results/llm_cache",
+                 ledger="results/requests.json", transport=None, seed=0, today=None, budget_tokens=None):
         assert provider in ("groq", "gemini")
-        self.provider, self.model, self.budget, self.seed = provider, model, daily_budget, seed
+        q = _quota(provider)
+        self.provider, self.model, self.seed = provider, model, seed
+        self.budget = daily_budget if daily_budget is not None else int(SAFETY_FRACTION * q.get("rpd", 250))
+        self.budget_tokens = budget_tokens if budget_tokens is not None else (
+            int(SAFETY_FRACTION * q["tpd"]) if q.get("tpd") else None)
         self.dir = Path(cache_dir); self.dir.mkdir(parents=True, exist_ok=True)
         self.ledger = Path(ledger)
-        self.today = today or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        off = datetime.timedelta(hours=-8 if provider == "gemini" else 0)
+        self.today = today or (datetime.datetime.now(datetime.timezone.utc) + off).strftime("%Y-%m-%d")
         self.calls, self.hits, self.retries_429 = 0, 0, 0
         self.transport = transport or self._http
 
-    # ---- request accounting (per provider per UTC day; real limits reset per provider's own clock) ----
-    def used(self):
+    # ---- request accounting ----
+    def _entry(self):
         d = json.load(open(self.ledger)) if self.ledger.exists() else {}
-        return d.get(self.today, {}).get(self.provider, 0)
+        e = d.get(self.today, {}).get(self.provider, 0)
+        return d, ({"req": e, "tok": 0} if isinstance(e, int) else e)
 
-    def _count(self):
-        d = json.load(open(self.ledger)) if self.ledger.exists() else {}
-        d.setdefault(self.today, {}).setdefault(self.provider, 0)
-        d[self.today][self.provider] += 1
+    def used(self): return self._entry()[1]["req"]
+    def used_tokens(self): return self._entry()[1]["tok"]
+
+    def _count(self, tokens=0):
+        d, e = self._entry()
+        e["req"] += 1; e["tok"] += tokens
+        d.setdefault(self.today, {})[self.provider] = e
         json.dump(d, open(self.ledger, "w"))
 
     # ---- transport ----
@@ -117,10 +139,12 @@ class LLM:
         if f.exists():
             self.hits += 1; r = json.load(open(f)); r["cached"] = True; return r
         if self.used() >= self.budget:
-            raise BudgetReached(f"{self.provider}: daily request budget {self.budget} reached; resume after reset")
+            raise BudgetReached(f"{self.provider}: daily request budget {self.budget} (80% of quota) reached; resume after reset")
+        if self.budget_tokens is not None and self.used_tokens() >= self.budget_tokens:
+            raise BudgetReached(f"{self.provider}: daily token budget {self.budget_tokens} (80% of quota) reached; resume after reset")
         t0 = time.time()
         r = self.transport(system, messages, tools, json_mode, max_tokens)
         r["latency_ms"] = (time.time() - t0) * 1000
-        self._count(); self.calls += 1
+        self._count(r.get("tokens_in", 0) + r.get("tokens_out", 0)); self.calls += 1
         json.dump(r, open(f, "w")); r["cached"] = False
         return r
