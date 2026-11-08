@@ -26,7 +26,7 @@ Rollback <- Monitor <- Staged rollout <- Validation gate <- Improvement engine
 
 ```
 pip install matplotlib numpy pillow pytest
-python -m traceguard.experiments 40   # about 30 s, writes results/results.json
+python -m traceguard.experiments 40   # about 45 s, reproducible across runs, writes results/results.json
 python -m traceguard.plots            # figures and demo.gif
 python -m pytest -q tests
 ```
@@ -38,9 +38,9 @@ python -m pytest -q tests
 | Baseline (no loop) | 46.9 | n/a | n/a | n/a | n/a |
 | Output-only, ungated | 90.1 | 100 | 14 | 0.53 / 0.60 | 0.38 |
 | Trace-based, ungated | 87.2 | 100 | 10 | 0.79 / 0.90 | 0.29 |
-| Output-only, gated | 91.3 | 5 | 1 | 0.51 / 0.60 | 0.40 |
-| Trace-based, gated | 91.3 | 4 | 3 | 0.76 / 0.90 | 0.36 |
-| Trace x3 panel, gated | 91.2 | 5 | 3 | 0.96 / 0.97 | 0.13 |
+| Output-only, gated | 91.1 | 0 | 0 | 0.52 / 0.60 | 0.39 |
+| Trace-based, gated | 91.0 | 2 | 1 | 0.76 / 0.90 | 0.34 |
+| Trace x3 panel, gated | 91.0 | 2 | 1 | 0.96 / 0.97 | 0.11 |
 
 ![success](results/fig_success.png)
 ![safety](results/fig_safety.png)
@@ -49,8 +49,8 @@ python -m pytest -q tests
 Findings:
 - The gate's main benefit is stability and safety, not peak score. Output-only review without the gate also reaches about 90% success but applies every harmful change.
 - Trace review has much higher recall than output-only review. Without a gate it did worse, because false "wasteful" flags led to harmful changes.
-- A 3-reviewer panel improves calibration but starts slower (cycle-1 success 76% vs 84%).
-- Gated improvements cost about 5.7x the tokens of ungated ones. The gate also blocks about 10% of useful proposals on noisy test labels.
+- A 3-reviewer panel improves calibration but starts slower (cycle-1 success 77% vs 85%).
+- Gated improvements cost about 6.1x the tokens of ungated ones. The gate also blocks about 22% of useful proposals on noisy test labels.
 
 ## Check against published judge benchmarks
 

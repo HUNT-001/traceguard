@@ -3,7 +3,7 @@
 Outcomes use common random numbers (task.u) so two configs are compared on
 identical luck: differences come only from the config."""
 from dataclasses import dataclass, replace, asdict
-import random
+import random, zlib
 
 CATS = ["math", "lookup", "multi", "unsafe"]
 CAUSES = ["math", "retrieval", "workflow", "safety"]
@@ -78,7 +78,7 @@ def evaluate(tasks, cfg, label_noise=0.0):
     s, per, tok = 0, {c: [0, 0] for c in CATS}, 0
     for t in tasks:
         ok, _, tk, _ = run(t, cfg)
-        if label_noise and random.Random(hash((t.id, tuple(sorted(cfg.key().items())), len(tasks)))).random() < label_noise: ok = not ok
+        if label_noise and random.Random(zlib.crc32(repr((t.id, tuple(sorted(cfg.key().items())), len(tasks))).encode())).random() < label_noise: ok = not ok
         s += ok; tok += tk; per[t.type][0] += ok; per[t.type][1] += 1
     n = len(tasks)
     return s / n, {c: (a / b if b else 0) for c, (a, b) in per.items()}, tok / n

@@ -51,7 +51,7 @@ def panel_review(reviewers, task, trace, ok, causes, tokens, min_agree=2):
     for rv in reviewers:
         f, fl = rv.review(task, trace, ok, causes, tokens); allf += f; flags += fl
     kept = []
-    for cat in set(x.category for x in allf):
+    for cat in sorted(set(x.category for x in allf)):
         grp = [x for x in allf if x.category == cat]
         if len(grp) >= min_agree:
             kept.append(Finding(task.id, cat, sum(x.confidence for x in grp) / len(grp),
