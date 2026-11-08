@@ -110,7 +110,12 @@ class LLM:
             msgs, ot = _to_openai(system, messages, tools)
             body = dict(model=self.model, messages=msgs, temperature=0, seed=self.seed, max_tokens=max_tokens)
             if ot: body["tools"] = ot
-            r = self._post("https://api.groq.com/openai/v1/chat/completions", {"authorization": f"Bearer {key}"}, body)
+            try:
+                r = self._post("https://api.groq.com/openai/v1/chat/completions", {"authorization": f"Bearer {key}"}, body)
+            except RuntimeError as e:
+                if "output_parse_failed" in str(e) or "tool_use_failed" in str(e):   # model produced unparseable output
+                    return dict(content=[{"type": "text", "text": "[model error: unparseable generation]"}], tokens_in=0, tokens_out=0)
+                raise
             m = r["choices"][0]["message"]; blocks = []
             if m.get("content"): blocks.append({"type": "text", "text": m["content"]})
             for c in m.get("tool_calls") or []:
