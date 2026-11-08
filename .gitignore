@@ -1,2 +1,6 @@
+.env
+results/llm_cache/
+results/requests.json
+results/spend.json
 __pycache__/
-.pytest_cache/
+data_cache/

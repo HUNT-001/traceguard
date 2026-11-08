@@ -4,27 +4,92 @@
   "role": "agent and tau-bench user simulator",
   "base_url": "https://api.groq.com/openai/v1",
   "base_url_note": "inferred from https://api.groq.com/openai/v1/models on the models page",
-  "docs": ["https://console.groq.com/docs/rate-limits", "https://console.groq.com/docs/models", "https://console.groq.com/docs/tool-use"],
+  "docs": [
+   "https://console.groq.com/docs/rate-limits",
+   "https://console.groq.com/docs/models",
+   "https://console.groq.com/docs/tool-use"
+  ],
   "dashboard_for_exact_limits": "https://console.groq.com/settings/limits",
   "limits_caveat": "rate-limits page says the numbers shown are the base limits for the Developer plan; it has a 'Free Plan Limits' tab but the free numbers were not visible in the fetched text. Treat these as upper bounds.",
-  "tool_use_models_listed": ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "openai/gpt-oss-safeguard-20b", "qwen/qwen3.8-27b", "minimaxai/minimax-m2.7", "meta-models/muse-spark-open", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+  "tool_use_models_listed": [
+   "openai/gpt-oss-120b",
+   "openai/gpt-oss-20b",
+   "openai/gpt-oss-safeguard-20b",
+   "qwen/qwen3.8-27b",
+   "minimaxai/minimax-m2.7",
+   "meta-models/muse-spark-open",
+   "llama-3.3-70b-versatile",
+   "llama-3.1-8b-instant"
+  ],
   "limits_as_shown": {
-   "openai/gpt-oss-120b": {"rpm": 30, "rpd": 1000, "tpm": 8000, "tpd": 200000},
-   "openai/gpt-oss-20b": {"rpm": 30, "rpd": 1000, "tpm": 8000, "tpd": 200000},
-   "qwen/qwen3.8-27b": {"rpm": 30, "rpd": 1000, "tpm": 8000, "tpd": 200000}
+   "openai/gpt-oss-120b": {
+    "rpm": 30,
+    "rpd": 1000,
+    "tpm": 8000,
+    "tpd": 200000
+   },
+   "openai/gpt-oss-20b": {
+    "rpm": 30,
+    "rpd": 1000,
+    "tpm": 8000,
+    "tpd": 200000
+   },
+   "qwen/qwen3.8-27b": {
+    "rpm": 30,
+    "rpd": 1000,
+    "tpm": 8000,
+    "tpd": 200000
+   }
   },
-  "free_tier_membership_stated": false
+  "free_tier_membership_stated": false,
+  "measured_2026-11-08": {
+   "method": "x-ratelimit-* headers on a live 1-token call",
+   "models": [
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-120b",
+    "qwen/qwen3.8-27b"
+   ],
+   "limit_requests": 1000,
+   "limit_tokens_per_min": 8000,
+   "note": "requests limit is per day per docs table; TPD 200000 is from the docs table, not observable in headers"
+  },
+  "agent_model_chosen": "openai/gpt-oss-20b"
  },
  "gemini": {
   "role": "reviewers (different model family from the agent)",
   "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-  "docs": ["https://aistudio.google.com/docs/rate-limits", "https://aistudio.google.com/docs/models", "https://aistudio.google.com/api-reference/generate-content/generate-content.md"],
+  "docs": [
+   "https://aistudio.google.com/docs/rate-limits",
+   "https://aistudio.google.com/docs/models",
+   "https://aistudio.google.com/api-reference/generate-content/generate-content.md"
+  ],
   "dashboard_for_exact_limits": "https://aistudio.google.com/rate-limit",
   "limits_caveat": "per-model free-tier RPM/TPM/RPD are shown only in the AI Studio dashboard; docs give none. RPD resets at midnight Pacific.",
-  "models_listed_on_docs": ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-2.5-flash-lite"],
+  "models_listed_on_docs": [
+   "gemini-3.8-flash",
+   "gemini-3.6-flash",
+   "gemini-3.5-flash-lite",
+   "gemini-3.1-flash-lite",
+   "gemini-3-flash-preview",
+   "gemini-2.5-flash",
+   "gemini-2.5-flash-lite"
+  ],
   "models_caveat": "docs do not mark which are free-tier; gemini-2.5-* is deprecated and limited to existing users. Confirm free access in the dashboard.",
   "limits": null,
   "temperature_caveat": "docs say temperature (and topP/topK) is silently ignored on Gemini 3.6 Flash and newer; seed is sent, determinism is not guaranteed. Cache makes reruns identical.",
-  "json_output": "generationConfig.responseMimeType = application/json (docs also show a conflicting responseFormat shape; replies are parsed leniently anyway)"
+  "json_output": "generationConfig.responseMimeType = application/json (docs also show a conflicting responseFormat shape; replies are parsed leniently anyway)",
+  "measured_2026-11-08": {
+   "works": [
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash"
+   ],
+   "not_available_to_new_users": [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite"
+   ],
+   "free_tier_rpm_rpd": "not observable via API; dashboard login not available to me. Using a conservative self-imposed budget of 250 requests/day and treating 429 as the real signal."
+  },
+  "reviewer_model_chosen": "gemini-3.5-flash-lite"
  }
 }

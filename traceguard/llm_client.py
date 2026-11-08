@@ -13,6 +13,10 @@ class BudgetReached(RuntimeError):
     pass
 
 
+class QuotaExhausted(BudgetReached):
+    pass
+
+
 def _to_openai(system, messages, tools):
     out = [{"role": "system", "content": system}]
     for m in messages:
@@ -62,17 +66,20 @@ class LLM:
 
     # ---- transport ----
     def _post(self, url, headers, body):
-        req = urllib.request.Request(url, json.dumps(body).encode(), {"content-type": "application/json", **headers})
+        req = urllib.request.Request(url, json.dumps(body).encode(), {"content-type": "application/json", "user-agent": "traceguard/0.1", **headers})
         for a in range(7):
             try:
                 return json.load(urllib.request.urlopen(req, timeout=120))
             except urllib.error.HTTPError as e:
+                eb = e.read().decode(errors='replace')
+                if e.code == 429 and any(w in eb.lower() for w in ('per day', 'daily', 'tpd', 'rpd', 'perday')):
+                    raise QuotaExhausted(f"{self.provider} daily quota exhausted: {eb[:300]}")
                 if e.code in (429, 500, 503) and a < 6:
                     self.retries_429 += e.code == 429
                     ra = e.headers.get("retry-after")
                     time.sleep(min(90, float(ra)) if ra and ra.replace(".", "").isdigit() else min(60, 2 ** (a + 1)))
                     continue
-                raise RuntimeError(f"{self.provider} HTTP {e.code}: {e.read()[:300]!r}")
+                raise RuntimeError(f"{self.provider} HTTP {e.code}: {eb[:300]!r}")
 
     def _http(self, system, messages, tools, json_mode, max_tokens):
         if self.provider == "groq":

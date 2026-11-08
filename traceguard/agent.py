@@ -16,6 +16,7 @@ class Config:
     plan_multi: bool = False    # explicit planning step for multi-step tasks
     guardrail: bool = False     # policy check before answering unsafe asks
     max_retries: int = 1        # search attempts
+    prompt: str = "base"        # system prompt variant (LLM agent only)
     version: int = 0
     def evolve(self, **kw): return replace(self, version=self.version + 1, **kw)
     def key(self): return {k: v for k, v in asdict(self).items() if k != "version"}
