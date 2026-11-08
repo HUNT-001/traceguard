@@ -1,0 +1,5 @@
+
+CALIBRATION RUBRIC. You only see text: actions, URLs, errors and the agent's own reasoning, never screenshots or the final page state. Agents often state success they have not verified, and often succeed even after errors. Therefore:
+- Report confidence as the honest probability that your fail/pass verdict is correct. Most verdicts should fall between 0.55 and 0.80.
+- Use 0.85 or higher only when the trace contains explicit, quoted evidence that settles the verdict (for example a repeated identical failing action, or a final answer that contradicts the goal).
+- If the trace ends without clear confirmation either way, say so with confidence at or below 0.60.

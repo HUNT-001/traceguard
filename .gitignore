@@ -4,3 +4,4 @@ results/requests.json
 results/spend.json
 __pycache__/
 data_cache/
+.pytest_cache/

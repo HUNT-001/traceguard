@@ -12,13 +12,17 @@ REPO, SEED = "McGill-NLP/agent-reward-bench", 7
 MODEL = json.load(open("results/providers.json"))["gemini"]["reviewer_model_chosen"]
 
 
-def sample(n_per_class):
+def sample(n_per_class, seed=SEED, exclude_tasks=(), only_split=None):
     a = pd.read_csv(hf_hub_download(REPO, "data/annotations.csv", repo_type="dataset", local_dir="data_cache"))
     a = a[a.trajectory_success.isin(["Successful", "Unsuccessful"])].drop_duplicates(["task_id", "exp_name"])
+    a = a[~a.task_id.isin(set(exclude_tasks))]
+    if only_split:
+        sp = pd.read_csv(hf_hub_download(REPO, "data/splits.csv", repo_type="dataset", local_dir="data_cache"))
+        a = a[a.task_id.isin(set(sp[sp.split == only_split].task_id))]
     files = {f.split("/")[-1]: f for f in HfApi().list_repo_files(REPO, repo_type="dataset") if f.startswith("cleaned/")}
     rows = []
     for lab in ("Successful", "Unsuccessful"):
-        g = a[a.trajectory_success == lab].sample(frac=1, random_state=SEED)
+        g = a[a.trajectory_success == lab].sample(frac=1, random_state=seed)
         k = 0
         for _, r in g.iterrows():
             cands = [p for p in files.values() if p.endswith("/" + r.exp_name + "/" + r.task_id + ".json")
@@ -28,7 +32,7 @@ def sample(n_per_class):
                              exp=r.exp_name))
             k += 1
             if k == n_per_class: break
-    random.Random(SEED).shuffle(rows)
+    random.Random(seed).shuffle(rows)
     return rows
 
 
@@ -61,10 +65,17 @@ def metrics(recs):
                 accuracy=d(tp + tn, len(recs)), ece=ece([(r["conf"], r["pred_fail"] == r["label_fail"]) for r in recs]) if recs else None)
 
 
-def main(n=30):
-    llm = LLM("gemini", MODEL, daily_budget=250, seed=SEED)
-    rows = sample(n); out = {"model": MODEL, "seed": SEED, "sampled": len(rows), "modes": {}, "stopped": None}
-    revs = {m: LLMReviewer(llm, m) for m in ("output", "trace")}
+def main(n=30, tune=False, rubric_path="traceguard/rubric.txt", out_path=None):
+    llm = LLM("gemini", MODEL, daily_budget=600, seed=SEED)
+    if tune:   # tuning set: ARB dev-split tasks disjoint (by task id) from the reported validation sample
+        used = {r["task"] for r in json.load(open("results/reviewer_validation.json"))["modes"]["trace"]["records"]}
+        rows = sample(n, seed=11, exclude_tasks=used, only_split="dev")
+    else:
+        rows = sample(n)
+    rubric = open(rubric_path).read() if os.path.exists(rubric_path) else ""
+    out_path = out_path or ("results/reviewer_tune.json" if tune else "results/reviewer_validation.json")
+    out = {"rubric": rubric, "model": MODEL, "seed": SEED, "sampled": len(rows), "modes": {}, "stopped": None}
+    revs = {"output": LLMReviewer(llm, "output"), "trace": LLMReviewer(llm, "trace", system_extra=rubric)}
     recs = {m: [] for m in revs}
     try:
         for row in rows:
@@ -81,10 +92,10 @@ def main(n=30):
         out["modes"][m]["findings_dropped_no_evidence"] = revs[m].dropped
         out["modes"][m]["records"] = recs[m]
     out["requests_used_today"] = llm.used(); out["cache_hits"] = llm.hits
-    json.dump(out, open("results/reviewer_validation.json", "w"), indent=1)
+    json.dump(out, open(out_path, "w"), indent=1)
     for m in revs: print(m, {k: v for k, v in out["modes"][m].items() if k != "records"})
     print("stopped:", out["stopped"])
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 30)
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else 30, tune=len(sys.argv) > 2 and sys.argv[2] == "tune")
