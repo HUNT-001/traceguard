@@ -1,0 +1,445 @@
+{
+ "rubric": "\nCALIBRATION RUBRIC. You only see text: actions, URLs, errors and the agent's own reasoning, never screenshots or the final page state. Agents often state success they have not verified, and often succeed even after errors. Therefore:\n- Report confidence as the honest probability that your fail/pass verdict is correct. Most verdicts should fall between 0.55 and 0.80.\n- Use 0.85 or higher only when the trace contains explicit, quoted evidence that settles the verdict (for example a repeated identical failing action, or a final answer that contradicts the goal).\n- If the trace ends without clear confirmation either way, say so with confidence at or below 0.60.\n",
+ "model": "gemini-3.5-flash-lite",
+ "seed": 7,
+ "sampled": 25,
+ "modes": {
+  "output": {
+   "n": 25,
+   "tp": 13,
+   "fp": 8,
+   "fn": 2,
+   "tn": 2,
+   "fail_precision": 0.6190476190476191,
+   "fail_recall": 0.8666666666666667,
+   "success_precision": 0.5,
+   "success_recall": 0.2,
+   "accuracy": 0.6,
+   "ece": 0.37560000000000004,
+   "unparsed": 0,
+   "findings_dropped_no_evidence": 0,
+   "records": [
+    {
+     "task": "workarena.servicenow.dashboard-retrieve-catalog-and-max-order-development-laptop-p-c-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.dashboard-retrieve-incident-and-max-request-galaxy-note20-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.118",
+     "bench": "visualwebarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.create-user",
+     "bench": "workarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.high-priority-filter-problems-and-mark-duplicates-medium-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.64",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": false,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.344",
+     "bench": "webarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "webarena.430",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.filter-trivial-expenses-find-total-return-and-select-investments-medium-l2",
+     "bench": "workarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.navigate-and-order-loaner-laptop-l2",
+     "bench": "workarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.629",
+     "bench": "webarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.739",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": false,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.dashboard-retrieve-catalog-and-max-order-standard-laptop-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.248",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.306",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.171",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.15",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.352",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "webarena.583",
+     "bench": "webarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.380",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "webarena.586",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.133",
+     "bench": "visualwebarena",
+     "label_fail": true,
+     "pred_fail": false,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.get-warranty-expiration-date-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.419",
+     "bench": "visualwebarena",
+     "label_fail": true,
+     "pred_fail": false,
+     "conf": 0.99,
+     "parsed": true
+    },
+    {
+     "task": "webarena.427",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.99,
+     "parsed": true
+    }
+   ]
+  },
+  "trace": {
+   "n": 25,
+   "tp": 14,
+   "fp": 7,
+   "fn": 1,
+   "tn": 3,
+   "fail_precision": 0.6666666666666666,
+   "fail_recall": 0.9333333333333333,
+   "success_precision": 0.75,
+   "success_recall": 0.3,
+   "accuracy": 0.68,
+   "ece": 0.19799999999999993,
+   "unparsed": 0,
+   "findings_dropped_no_evidence": 0,
+   "records": [
+    {
+     "task": "workarena.servicenow.dashboard-retrieve-catalog-and-max-order-development-laptop-p-c-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.dashboard-retrieve-incident-and-max-request-galaxy-note20-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.118",
+     "bench": "visualwebarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.create-user",
+     "bench": "workarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.high-priority-filter-problems-and-mark-duplicates-medium-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.64",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": false,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.344",
+     "bench": "webarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.430",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.filter-trivial-expenses-find-total-return-and-select-investments-medium-l2",
+     "bench": "workarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.navigate-and-order-loaner-laptop-l2",
+     "bench": "workarena",
+     "label_fail": false,
+     "pred_fail": false,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.629",
+     "bench": "webarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.739",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.dashboard-retrieve-catalog-and-max-order-standard-laptop-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.248",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.306",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.171",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.15",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": false,
+     "conf": 0.75,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.352",
+     "bench": "visualwebarena",
+     "label_fail": false,
+     "pred_fail": false,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.583",
+     "bench": "webarena",
+     "label_fail": false,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.380",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "webarena.586",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.133",
+     "bench": "visualwebarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.85,
+     "parsed": true
+    },
+    {
+     "task": "workarena.servicenow.get-warranty-expiration-date-l2",
+     "bench": "workarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.95,
+     "parsed": true
+    },
+    {
+     "task": "visualwebarena.419",
+     "bench": "visualwebarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.9,
+     "parsed": true
+    },
+    {
+     "task": "webarena.427",
+     "bench": "webarena",
+     "label_fail": true,
+     "pred_fail": true,
+     "conf": 0.9,
+     "parsed": true
+    }
+   ]
+  }
+ },
+ "stopped": null,
+ "requests_used_today": 195,
+ "cache_hits": 25
+}

@@ -13,3 +13,13 @@ Reviewer model: `gemini-3.5-flash-lite` (Gemini family; agent family is OpenAI g
 | findings dropped for missing evidence | n/a | 0 |
 
 Targets: trace precision >= output + 5 pts: **missed (+1.2 pts)**. ECE <= 0.15: **missed (0.35 both)**. n=60, one run, so a 1-pt difference is ~1 trajectory; treat as indicative. Both reviewers over-flag failures (about 40% of successful trajectories flagged) and are overconfident. No tuning has been done on these results yet.
+
+## Tuning set for reviewer iterations
+25 AgentRewardBench trajectories (10 successful, 15 unsuccessful), drawn from the benchmark's own `dev` split, disjoint by task id from the 60-trajectory validation sample above (only 25 were available after exclusion). Baseline (no rubric), `results/reviewer_tune_iter0.json`: trace failure precision 13/19 = 0.684, output-only 13/21 = 0.619 (gap +6.5 pts), trace recall 13/15, trace ECE 0.302, output-only ECE 0.376. The 60-trajectory validation sample is not used for tuning and is re-run once at the end. With n=25, one trajectory moves precision by ~5 pts and the 1-pt keep rule is far below the noise floor; the rule is applied literally anyway.
+
+## Iteration 1 (reviewer rubric, target: ECE)
+- Metric furthest from target: ECE 0.302 vs <= 0.15 (precision gap already +6.5 vs +5).
+- Hypothesis: the reviewer sees text only but reports high confidence; telling it so and anchoring confidence to evidence strength should cut overconfidence.
+- Change (one): added `traceguard/rubric.txt` (calibration rubric) appended to the trace reviewer prompt.
+- Before -> after (trace reviewer, tuning set): ECE 0.302 -> 0.198 (better, still above 0.15); failure precision 0.684 (13/19) -> 0.667 (14/21), **-1.8 pts**; recall 13/15 -> 14/15; precision gap vs output-only +6.5 -> +4.8 pts.
+- Decision: **REVERT**. Target metric improved but precision (and the gap) fell by more than 1 pt. Noted: this is a 1-trajectory difference on n=25; the revert follows the rule as written, not a belief that the rubric hurts.
