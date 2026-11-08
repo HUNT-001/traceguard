@@ -30,18 +30,17 @@ class LLMReviewer:
     """review(task, trace, ok, causes, tokens) -> (findings, flag). `ok`/`causes` are ground truth
     used only to fill Finding.correct for scoring; they are NEVER shown to the model."""
 
-    def __init__(self, llm, model, mode="trace", system_extra=""):
-        self.llm, self.model, self.mode, self.extra = llm, model, mode, system_extra
-        self.tokens, self.ms, self.cost, self.dropped = 0, 0.0, 0.0, 0
+    def __init__(self, llm, mode="trace", system_extra=""):
+        self.llm, self.mode, self.extra = llm, mode, system_extra
+        self.tokens, self.ms, self.dropped = 0, 0.0, 0
 
     def review(self, task, trace, ok, causes, tokens, answer=None, task_text=None):
         sysm = (TRACE_SYS if self.mode == "trace" else OUT_SYS) + self.extra
         body = f"TASK: {task_text or getattr(task, 'text', task)}\n"
         body += ("TRACE:\n" + render_trace(trace)) if self.mode == "trace" else f"FINAL ANSWER: {answer}"
-        r = self.llm.chat(self.model, sysm, [{"role": "user", "content": body}], max_tokens=500, temperature=0.0)
+        r = self.llm.chat(sysm, [{"role": "user", "content": body}], json_mode=True, max_tokens=500)
         self.tokens += r["tokens_in"] + r["tokens_out"]
         self.ms += r["latency_ms"]
-        self.cost += r["cost"]
         j = parse_json("".join(b.get("text", "") for b in r["content"])) or {}
         flag = bool(j.get("fail"))
         if not flag:

@@ -1,6 +1,6 @@
 """Tool-using LLM agent with the run(task, cfg) shape. Config knobs mirror agent.Config:
-guardrail, plan_multi (planning step), max_retries (tool-error budget), retrieval_k (results the
-search tool is asked for, via the environment's tools), prompt_variant. `tools` maps
+guardrail, plan_multi (planning step), max_retries (tool-error budget), prompt_variant.
+retrieval_k is NOT used here: tau-bench retail has no search/retrieval tool. `tools` maps
 name -> (schema, fn) and comes from the environment (e.g. tau-bench retail).
 Returns (success, trace, tokens, causes) like agent.run; every step records tool, args,
 result, tokens and latency."""
@@ -13,7 +13,7 @@ PROMPTS = {
 }
 
 
-def run(task, cfg, llm, model, tools, policy="", check=None, max_turns=20, prompt_variant="base"):
+def run(task, cfg, llm, tools, policy="", check=None, max_turns=20, prompt_variant="base"):
     sys_ = PROMPTS[prompt_variant] + "\n" + policy
     if cfg.guardrail:
         sys_ += "\nBefore any write action, state which policy rule allows it; refuse if none does."
@@ -22,7 +22,7 @@ def run(task, cfg, llm, model, tools, policy="", check=None, max_turns=20, promp
     schemas = [s for s, _ in tools.values()]
     msgs, trace, tok, errors = [{"role": "user", "content": task.text}], [], 0, 0
     for _ in range(max_turns):
-        r = llm.chat(model, sys_, msgs, tools=schemas, max_tokens=1024, temperature=0.0)
+        r = llm.chat(sys_, msgs, tools=schemas, max_tokens=1024)
         t_in = r["tokens_in"] + r["tokens_out"]
         tok += t_in
         msgs.append({"role": "assistant", "content": r["content"]})
