@@ -1,0 +1,12 @@
+{
+ "output": {
+  "start config": 0.736,
+  "mid config": 0.815,
+  "final config": 0.854
+ },
+ "trace": {
+  "start config": 0.915,
+  "mid config": 0.932,
+  "final config": 0.935
+ }
+}

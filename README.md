@@ -52,6 +52,17 @@ Findings:
 - A 3-reviewer panel improves calibration but starts slower (cycle-1 success 76% vs 84%).
 - Gated improvements cost about 5.7x the tokens of ungated ones. The gate also blocks about 10% of useful proposals on noisy test labels.
 
+## Check against published judge benchmarks
+
+| Source | Published result |
+|---|---|
+| Zheng et al. 2023 (MT-Bench) | GPT-4 judge agrees with humans over 80%; position, verbosity and self-enhancement biases |
+| Zhuge et al. 2024 (DevAI, Agent-as-a-Judge) | trace-aware judge 90% aligned with human consensus vs 70% for an LLM judge |
+| Lu et al. 2025 (AgentRewardBench) | best LLM judges about 70% precision on web-agent trajectories |
+| Yao et al. 2024 (tau-bench) | GPT-4o agent 61% pass^1 on retail, under 25% pass^8 |
+
+`python -m traceguard.calibration` measures how often the simulated reviewers agree with ground truth. At the start config (53% failure rate): output-only 73.6%, trace-based 91.5%, close to the published 70% and 90%. The reviewer error rates were set beforehand, not fitted to these numbers. Agreement rises as the agent improves because failures become rarer.
+
 ## Limits
 
 The agent and the reviewers are **simulated** stochastic stand-ins with explicit error rates, so the loop can be scored against known ground truth. The numbers show how the control loop behaves, not how a specific LLM performs. To run on a live agent, replace `agent.run()` and `Reviewer.review()` with LLM calls behind the same interfaces. Test labels are assumed 5% noisy. Cost figures are token counts from the simulation.
