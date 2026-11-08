@@ -36,12 +36,12 @@ def run(task, cfg, llm, tools, policy="", check=None, max_turns=20, prompt_varia
         for c in calls:
             t0 = time.time()
             try:
+                if errors > cfg.max_retries:                 # enforced retry budget: no tool calls after it is spent
+                    raise RuntimeError("retry budget exhausted; no further tool calls are allowed, give your best final answer")
                 out = tools[c["name"]][1](**c["input"])
             except Exception as e:
                 out = f"ERROR: {e}"
                 errors += 1
-                if errors > cfg.max_retries:
-                    out += " (retry budget exhausted; stop retrying)"
             trace.append(dict(id=len(trace), tool=c["name"], args=c["input"], result=str(out)[:2000],
                               tokens=t_in, latency_ms=r["latency_ms"] + (time.time() - t0) * 1000))
             results.append({"type": "tool_result", "tool_use_id": c["id"], "content": str(out)})
