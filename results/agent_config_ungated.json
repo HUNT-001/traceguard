@@ -1,0 +1,1 @@
+{"verify_math": false, "retrieval_k": 2, "plan_multi": true, "guardrail": false, "max_retries": 0, "prompt": "base"}
